@@ -1,85 +1,50 @@
-import { title } from "process";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Card from "./ui/Card";
-
-const tasks = [
-    {
-        id: "1",
-        title: "title",
-        body: "Your Card component is well-structured, but I have a few suggestions to improve accessibility, styling consistency, and maintainability:",
-    },
-    {
-        id: "2",
-        title: "title",
-        body: "Your Card component is well-structured, but I have a few suggestions to improve accessibility, styling consistency, and maintainability:",
-    },
-    {
-        id: "3",
-        title: "title",
-        body: "Your Card component is well-structured, but I have a few suggestions to improve accessibility, styling consistency, and maintainability:",
-    },
-    {
-        id: "4",
-        title: "title",
-        body: "Your Card component is well-structured, but I have a few suggestions to improve accessibility, styling consistency, and maintainability:",
-    },
-    {
-        id: "5",
-        title: "title",
-        body: "Your Card component is well-structured, but I have a few suggestions to improve accessibility, styling consistency, and maintainability:",
-    },
-    {
-        id: "6",
-        title: "title",
-        body: "Your Card component is well-structured, but I have a few suggestions to improve accessibility, styling consistency, and maintainability:",
-    },
-    {
-        id: "7",
-        title: "title",
-        body: "and maintainability:",
-    },
-    {
-        id: "12",
-        title: "title",
-        body: "Your Card component is well-structured, but I have a few suggestions to improve accessibility, styling consistency, and maintainability:",
-    },
-    {
-        id: "15",
-        title: "title",
-        body: "Your Card component is well-structured, but I have a few suggestions to improve accessibility, styling consistency, and maintainability:",
-    },
-    {
-        id: "16",
-        title: "title",
-        body: "Your Card component is well-structured, but I have a few suggestions to improve accessibility, styling consistency, and maintainability:",
-    },
-    {
-        id: "17",
-        title: "title",
-        body: "Your Card component is well-structured, but I have a few suggestions to improve accessibility, styling consistency, and maintainability:",
-    },
-    {
-        id: "18",
-        title: "title",
-        body: "Your Card component is well-structured, but I have a few suggestions to improve accessibility, styling consistency, and maintainability:",
-    },
-    {
-        id: "19",
-        title: "title",
-        body: "Your Card component is well-structured, but I have a few suggestions to improve accessibility, styling consistency, and maintainability:",
-    },
-    {
-        id: "20",
-        title: "title",
-        body: "and maintainability:",
-    },
-];
+import { getNotes, deleteNote } from "@/lib/noteHandler";
+import { auth } from "@/lib/firebaseConfig";
+import Compose from "./ui/Compose";
 
 function CardList() {
+    const user = auth.currentUser;
+    const [notes, setNotes] = useState<
+        { lastEdited: number; id: string; title: string; body: string }[]
+    >([]);
+
+    const handleDeleteNote = async (id: string) => {
+        if (user) {
+            await deleteNote(user.uid, id);
+            fetchNotes();
+        }
+    };
+
+    const fetchNotes = async () => {
+        if (user) {
+            const storedNotes = (await getNotes(user.uid)) as {
+                lastEdited: number;
+                id: string;
+                title: string;
+                body: string;
+            }[];
+            setNotes(storedNotes.sort((a, b) => a.lastEdited - b.lastEdited));
+        }
+    };
+
+    useEffect(() => {
+        fetchNotes();
+        const interval = setInterval(fetchNotes, 1000);
+        return () => clearInterval(interval);
+    }, [user]);
+
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
-            {tasks.map((task) => (
-                <Card title={task.title} body={task.body} key={task.id} />
+            <Compose onNoteAdded={fetchNotes} />
+            {notes.map((task) => (
+                <Card
+                    title={task.title}
+                    body={task.body}
+                    key={task.id}
+                    onClose={() => handleDeleteNote(task.id)}
+                />
             ))}
         </div>
     );
