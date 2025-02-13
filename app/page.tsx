@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import CardList from "@/components/CardList";
 import Nav from "@/components/ui/Nav";
 import { getAuth, User } from "firebase/auth";
+import Alert from "@/components/ui/Alert";
 
 async function fetchUser(token: string): Promise<User | null> {
     const response = await fetch("/api/user", {
@@ -49,6 +50,7 @@ export default function Home() {
             <Nav user={user} />
             <div className="mt-24">
                 <CardList />
+                {/* <Alert text="Hello" type="success" />; */}
             </div>
         </div>
     );

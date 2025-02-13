@@ -11,6 +11,7 @@
         --accent: #443dff;
         --cardBg: #efeff8;
         --grid: #00000020;
+        --borderC: #020024;
     }
     .dark {
         --text: #eae9fc;
@@ -20,5 +21,6 @@
         --accent: #0600c2;
         --cardBg: #070711;
         --grid: #ffffff30;
+        --borderC: #dddbff;
     }
 }

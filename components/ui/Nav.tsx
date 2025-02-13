@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Contact } from "lucide-react";
+import { Contact, RefreshCw } from "lucide-react";
 import ThemeToggle from "../ThemeToggle";
 import { User } from "firebase/auth";
 import { logOut } from "@/lib/firebaseConfig";
-import FirebaseAuth from "@/components/FirebaseAuth"; // Assuming you have this component for Firebase Authentication
+import FirebaseAuth from "@/components/FirebaseAuth";
+// import Loader from "./Loader";
+// import Refresh from "./Refresh";
 
 interface NavProps {
     user: User | null;
@@ -42,9 +44,10 @@ const Nav = ({ user }: NavProps) => {
     }, [isMenuOpen]);
 
     return (
-        <div className="fixed z-20 top-0 backdrop-blur-md bg-secondary text-text rounded-lg w-full p-4 h-16 flex justify-between items-center px-8">
+        <div className="fixed z-20 top-0 backdrop-blur-md bg-secondary text-text rounded-lg w-full p-4 h-16 flex justify-center gap-20 md:gap-[50vw] items-center px-8">
             <span className="text-lg font-semibold">IdeaBoard</span>
             <div className="flex items-center gap-8 relative">
+                {/* <Refresh buttonClass={"hidden md:flex"} /> */}
                 <button
                     ref={buttonRef}
                     onClick={() => {
